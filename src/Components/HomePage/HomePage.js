@@ -33,9 +33,12 @@ export default function HomePage() {
   const socketRef = useRef();
 
   useEffect(() => {
-    socketRef.current = io.connect("http://localhost:8989", {
-      transports: ["websocket"],
-    });
+    socketRef.current = io.connect(
+      "https://chat-app-backend-socket.herokuapp.com/",
+      {
+        transports: ["websocket"],
+      }
+    );
 
     socketRef.current.on("set_id", (data) => {
       setYourID(data.id);
