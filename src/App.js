@@ -1,6 +1,7 @@
 import "./App.css";
 import LoginPage from "./Components/LoginPage/LoginPage";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import MessagePage from "./Components/MessagePage/MessagePage";
 import HomePage from "./Components/HomePage/HomePage";
 
 function App() {

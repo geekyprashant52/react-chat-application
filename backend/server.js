@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
-const port = 8000;
+const port = 8989;
 
 app.use(express());
 app.use(cors());
@@ -14,10 +14,6 @@ let clientArray = [];
 const users = {};
 
 io.on("connection", (socket) => {
-  // io.sockets.on("connect", (cl) => {
-  //   clientArray.push(cl.id);
-  //   console.log(clientArray);
-  // });
   socket.on("new-user", (newUserData) => {
     users[socket.id] = newUserData;
     let isPresent = false;
@@ -32,8 +28,6 @@ io.on("connection", (socket) => {
     if (!isPresent) {
       clientArray.push(newUserData);
     }
-
-    // newUserData[socket.id] = users;
     let data = {
       data: newUserData,
       usersList: clientArray,
@@ -61,3 +55,65 @@ io.on("connection", (socket) => {
 server.listen(port, () => {
   console.log("Server Started at port: " + port);
 });
+
+//
+//
+//
+//
+
+//New Method
+
+// const WebSocket = require("ws");
+// const wss = new WebSocket.Server(
+//   {
+//     port: 8080,
+//   },
+//   () => {
+//     console.log("Websocket ready!");
+//   }
+// );
+
+// wss.on("connection", (ws) => {
+//   console.log("New Client Connected");
+//   ws.on("new-user", (newUserData) => {
+//     users[socket.id] = newUserData;
+//     let isPresent = false;
+//     if (clientArray.length === 0) {
+//       clientArray.push(newUserData);
+//     }
+//     for (let i = 0; i < clientArray.length; i++) {
+//       if (newUserData.name === clientArray[i].name) {
+//         isPresent = true;
+//       }
+//     }
+//     if (!isPresent) {
+//       clientArray.push(newUserData);
+//     }
+//     let data = {
+//       data: newUserData,
+//       usersList: clientArray,
+//     };
+//     ws.emit("user-connected", data);
+//     ws.emit("user-count", clientArray);
+//   });
+
+//   let data = { id: ws.id };
+//   ws.emit("set_id", data);
+//   ws.on("send_message", (body) => {
+//     ws.emit("message", body);
+//   });
+
+//   ws.on("disconnect", () => {
+//     console.log("User Disconnected");
+//     clientArray = clientArray.filter(
+//       (item) => users[socket.id].name !== item.name
+//     );
+//     delete users[socket.id];
+//     ws.emit("user-disconnected", clientArray);
+//   });
+
+//   // ws.send("ws server started!");
+//   // ws.on("message", (data) => {
+//   //   ws.send(`server: ${data}`);
+//   // });
+// });
