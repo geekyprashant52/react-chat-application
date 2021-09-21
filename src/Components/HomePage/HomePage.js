@@ -36,7 +36,7 @@ export default function HomePage() {
   let connectionUrl = "https://chat-app-backend-socket.herokuapp.com/";
 
   useEffect(() => {
-    socketRef.current = io.connect("http://localhost:8282", {
+    socketRef.current = io.connect(connectionUrl, {
       transports: ["websocket"],
     });
 
