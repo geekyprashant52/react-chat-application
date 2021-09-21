@@ -21,11 +21,22 @@ export default function LoginPage() {
       <h1>Join to chat app</h1>
       <div className={classes.loginFormWrapper}>
         <p>Username</p>
-        <input
-          value={inputText}
-          onChange={(e) => setinputText(e.target.value)}
-          type="text"
-        />
+        <div className={classes.loginFormInputsWrapper}>
+          <input
+            value={inputText}
+            onChange={(e) => setinputText(e.target.value)}
+            type="text"
+            placeholder="Enter username"
+          />
+          <button
+            onClick={() => {
+              handleSubmit(inputText);
+            }}
+          >
+            Join
+          </button>
+        </div>
+
         {isError ? (
           <div className={classes.loginPageErrorWrapper}>
             <p>Please enter valid username</p>
@@ -33,14 +44,6 @@ export default function LoginPage() {
         ) : (
           ""
         )}
-
-        <button
-          onClick={() => {
-            handleSubmit(inputText);
-          }}
-        >
-          Join
-        </button>
       </div>
     </div>
   );

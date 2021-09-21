@@ -5,6 +5,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --primary_color: #5a439a;
+  --secondary_color: #271c46;
+  --messanger_body_color: #e5e5fe;
+  background-color: var(--primary_color);
 }
 
 code {
@@ -16,4 +21,11 @@ code {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+button {
+  background-color: #271c46;
+  color: white;
+  padding: 3px 15px;
+  font-weight: 500;
 }

@@ -20,6 +20,8 @@ export default function HomePage() {
   const [messages, setMessages] = useState([]);
   const [connectedUserInfo, setconnectedUserInfo] = useState([]);
   const [totalConnectedUsers, settotalConnectedUsers] = useState([]);
+  const [disconnectedUsers, setdisconnectedUsers] = useState([]);
+  const [messageBoxClass, setmessageBoxClass] = useState([classes.messageBox]);
 
   let totalUsers = window.localStorage.getItem(itemName);
   if (totalUsers !== null || totalUsers !== "") {
@@ -31,14 +33,12 @@ export default function HomePage() {
   //console.log(totalUsers);
 
   const socketRef = useRef();
+  let connectionUrl = "https://chat-app-backend-socket.herokuapp.com/";
 
   useEffect(() => {
-    socketRef.current = io.connect(
-      "https://chat-app-backend-socket.herokuapp.com/",
-      {
-        transports: ["websocket"],
-      }
-    );
+    socketRef.current = io.connect("http://localhost:8282", {
+      transports: ["websocket"],
+    });
 
     socketRef.current.on("set_id", (data) => {
       setYourID(data.id);
@@ -56,6 +56,9 @@ export default function HomePage() {
 
     socketRef.current.on("user-connected", (userData) => {
       setconnectedUserInfo((oldData) => [...oldData, userData]);
+    });
+    socketRef.current.on("show-disconnect", (userData) => {
+      setdisconnectedUsers([userData]);
     });
     socketRef.current.on("user-count", (array) => {
       settotalConnectedUsers([]);
@@ -90,9 +93,50 @@ export default function HomePage() {
     socketRef.current.emit("send_message", messageObject);
   }
 
+  const CreateMessageBox = (props) => {
+    const { name, message, time, id } = props.data;
+    let isIdMatched = props.idMatched;
+    let className = [classes.messageBox];
+    let classNameMessageName = [classes.messageBoxNameWrapper];
+    if (isIdMatched) {
+      className = [classes.messageBoxOther];
+      classNameMessageName = [classes.messageBoxNameWrapperOther];
+    }
+    return (
+      <div className={classes.messageBoxWrapper}>
+        <div className={className}>
+          <div className={classNameMessageName}>
+            <h4>{isIdMatched ? `You` : `${name}`}</h4>
+            <p>{time}</p>
+          </div>
+          <h3>{message}</h3>
+        </div>
+      </div>
+    );
+  };
+  const CreateConnectedUsers = (props) => {
+    const { name, message, time, id } = props.data;
+    let isIdMatched = props.idMatched;
+    return (
+      <div className={classes.conneceduserInfoBox}>
+        <p>{time}</p>
+        <h4>{isIdMatched ? `Welcome ${name}` : `${name} Joined`}</h4>
+      </div>
+    );
+  };
+  const CreateDisconnectedUsers = (props) => {
+    const { name, time } = props.data;
+
+    return (
+      <div className={classes.disconneceduserInfoBox}>
+        <p>{time}</p>
+        <h4>{`${name} disconnected`}</h4>
+      </div>
+    );
+  };
+
   return (
     <div className={classes.homePageWrapper}>
-      <h1 className={classes.heading}>Welcome {userName}</h1>
       <div className={classes.chatScreenWrapper}>
         <div className={classes.chatLeftDivWrapper}>
           <h3>Current users</h3>
@@ -113,6 +157,9 @@ export default function HomePage() {
         </div>
         <div className={classes.verticleLine}></div>
         <div className={classes.chatrightDivWrapper}>
+          <div className={classes.chatrightTopbar}>
+            <h2>{`${userName}`}</h2>
+          </div>
           <div className={classes.messageDivWrapper}>
             {connectedUserInfo &&
               connectedUserInfo.map((item, pos) => {
@@ -127,6 +174,9 @@ export default function HomePage() {
                   />
                 );
               })}
+            {disconnectedUsers.map((item) => {
+              return <CreateDisconnectedUsers data={item} />;
+            })}
             {messages.map((item, pos) => {
               const { id } = item;
               let isIdMatched = false;
@@ -145,6 +195,7 @@ export default function HomePage() {
               value={inputMessage}
               onChange={(e) => setinputMessage(e.target.value)}
               type="text"
+              placeholder="write a message"
             />
             <button
               onClick={(e) => {
@@ -159,24 +210,3 @@ export default function HomePage() {
     </div>
   );
 }
-
-const CreateMessageBox = (props) => {
-  const { name, message, time, id } = props.data;
-  let isIdMatched = props.idMatched;
-  return (
-    <div className={classes.messageBox}>
-      <p>{time}</p>
-      <h4>{isIdMatched ? `You: ${message}` : `${name}: ${message}`}</h4>
-    </div>
-  );
-};
-const CreateConnectedUsers = (props) => {
-  const { name, message, time, id } = props.data;
-  let isIdMatched = props.idMatched;
-  return (
-    <div className={classes.conneceduserInfoBox}>
-      <p>{time}</p>
-      <h4>{isIdMatched ? `Welcome ${name}` : `${name} Joined`}</h4>
-    </div>
-  );
-};
