@@ -4,11 +4,12 @@ import { useHistory } from "react-router-dom";
 
 export default function LoginPage() {
   const [inputText, setinputText] = useState("");
+  const [inputKey, setinputKey] = useState("");
   const [isError, setisError] = useState(false);
   const history = useHistory();
 
   const handleSubmit = (input) => {
-    if (input.toString().trim().length > 3) {
+    if (input.toString().trim().length > 3 && inputKey === "1234") {
       setisError(false);
       history.push(`/join/${input}`);
     } else {
@@ -36,10 +37,20 @@ export default function LoginPage() {
             Join
           </button>
         </div>
+        <div className={classes.loginFormInputsWrapper}>
+          <input
+            type="text"
+            placeholder="Enter key eg. 1234"
+            value={inputKey}
+            onChange={(e) => {
+              setinputKey(e.target.value);
+            }}
+          />
+        </div>
 
         {isError ? (
           <div className={classes.loginPageErrorWrapper}>
-            <p>Please enter valid username</p>
+            <p>Please enter valid data</p>
           </div>
         ) : (
           ""

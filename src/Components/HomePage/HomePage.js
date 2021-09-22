@@ -90,7 +90,9 @@ export default function HomePage() {
       time: getCurrentTime(),
     };
     setinputMessage("");
-    socketRef.current.emit("send_message", messageObject);
+    if (inputMessage.trim().length !== 0) {
+      socketRef.current.emit("send_message", messageObject);
+    }
   }
 
   const CreateMessageBox = (props) => {
@@ -126,7 +128,6 @@ export default function HomePage() {
   };
   const CreateDisconnectedUsers = (props) => {
     const { name, time } = props.data;
-
     return (
       <div className={classes.disconneceduserInfoBox}>
         <p>{time}</p>
@@ -174,9 +175,7 @@ export default function HomePage() {
                   />
                 );
               })}
-            {disconnectedUsers.map((item) => {
-              return <CreateDisconnectedUsers data={item} />;
-            })}
+
             {messages.map((item, pos) => {
               const { id } = item;
               let isIdMatched = false;
@@ -188,6 +187,9 @@ export default function HomePage() {
                   idMatched={isIdMatched}
                 />
               );
+            })}
+            {disconnectedUsers.map((item) => {
+              return <CreateDisconnectedUsers data={item} />;
             })}
           </div>
           <div className={classes.messageEditorDiv}>
